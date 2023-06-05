@@ -33,9 +33,15 @@ public class BotController extends TelegramLongPollingBot {
                     throw new RuntimeException(e);
                 }
             }else if (callbackQuery.getData().equals("kredit")){
-
+                SendMessage creditCommand = kreditCalculs.getCreditCommand(chatId);
+                try {
+                    execute(creditCommand);
+                } catch (TelegramApiException e) {
+                    throw new RuntimeException(e);
+                }
+            } else if (callbackQuery.getData().equals("calculs")) {
                 sendMessage.setChatId(chatId);
-                sendMessage.setText("Kredit summasini va muddatini kiriting\nNamuna: 8000/5   so'm/oy kabi");
+                sendMessage.setText("Kredit summasi, muddatini va yillik foiz stavkasini(%) kiriting\nNamuna: 8000/5/30   so'm/oy/% kabi");
                 try {
                     execute(sendMessage);
                 } catch (TelegramApiException e) {
@@ -82,16 +88,18 @@ public class BotController extends TelegramLongPollingBot {
                 String[] split = text.split("/");
                 double credit = Double.parseDouble(split[0]);
                 Integer month = Integer.valueOf(split[1]);
-                SendMessage kreditCalclus = kreditCalculs.getKreditCalclus(credit, month, message.getChatId());
-                execute(kreditCalclus);
+                Integer protsent = Integer.valueOf(split[2]);
+                sendMessage = kreditCalculs.getKreditCalclus(credit, month, protsent, message.getChatId());
+                execute(sendMessage);
             }catch (Exception e){
-                sendMessage.setChatId(message.getChatId());
-                sendMessage.setText("Xato matin kiritldi.");
-                try {
-                    execute(sendMessage);
-                } catch (TelegramApiException ex) {
-                    throw new RuntimeException(ex);
-                }
+//                sendMessage.setChatId(message.getChatId());
+//                sendMessage.setText("Xato matin kiritldi.");
+//                try {
+//                    execute(sendMessage);
+//                } catch (TelegramApiException ex) {
+//                    throw new RuntimeException(ex);
+//                }
+                e.printStackTrace();
             }
 
         }
