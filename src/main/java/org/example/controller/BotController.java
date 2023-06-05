@@ -88,18 +88,17 @@ public class BotController extends TelegramLongPollingBot {
                 String[] split = text.split("/");
                 double credit = Double.parseDouble(split[0]);
                 Integer month = Integer.valueOf(split[1]);
-                Integer protsent = Integer.valueOf(split[2]);
+                Double protsent = Double.parseDouble(split[2]);
                 sendMessage = kreditCalculs.getKreditCalclus(credit, month, protsent, message.getChatId());
                 execute(sendMessage);
             }catch (Exception e){
-//                sendMessage.setChatId(message.getChatId());
-//                sendMessage.setText("Xato matin kiritldi.");
-//                try {
-//                    execute(sendMessage);
-//                } catch (TelegramApiException ex) {
-//                    throw new RuntimeException(ex);
-//                }
-                e.printStackTrace();
+                sendMessage.setChatId(message.getChatId());
+                sendMessage.setText("Xato matin kiritldi.");
+                try {
+                    execute(sendMessage);
+                } catch (TelegramApiException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
 
         }

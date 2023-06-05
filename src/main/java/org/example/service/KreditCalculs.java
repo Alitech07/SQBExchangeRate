@@ -11,8 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.util.LinkedList;
 import java.util.List;
 
-import static java.lang.Math.floor;
-import static java.lang.Math.ulp;
+import static java.lang.Math.*;
 
 public class KreditCalculs {
     public SendMessage getCreditCommand(Long chatId){
@@ -35,34 +34,24 @@ public class KreditCalculs {
         sendMessage.setReplyMarkup(inlineKeyboardMarkup);
         return sendMessage;
     }
-    public SendMessage getKreditCalclus(Double sum,Integer month, Integer protsent, Long chatId){
+    public SendMessage getKreditCalclus(Double sum,Integer month, Double protsent, Long chatId){
         SendMessage sendMessage = new SendMessage();
             Double residual = sum;
-            double principl_debt = floor(sum/month);
+            double principl_debt = round((sum/month)*100)/100.0;
             String table = "";
 
             for (int i=1;i<=month;i++){
-                double interest_payment = floor((residual-residual*protsent/100)/12);
-                residual-=principl_debt;
-                double monthly_payment = principl_debt+interest_payment;
-
-                if (i==1){
+                double y = residual*protsent/100;
+                double interest_payment = round(((residual-y)/12)*100)/100.0;
+                double monthly_payment = round((principl_debt+interest_payment)*100)/100.0;
                     table +=
-                            " <b>"+i+"</b> "
-                            +" <b>"+sum+"</b> "
-                            +" <b>"+principl_debt+"</b> "
-                            +" <b>"+interest_payment+"</b> "
-                            +" <b>"+monthly_payment+"</b> "
+                            "  <b>"+i+"</b>  "
+                            +"   <b>"+residual+"</b>    "
+                            +"    <b>"+principl_debt+"</b>   "
+                            +"<b>   "+interest_payment+" </b>  "
+                            +"<b>   "+monthly_payment+" </b>"
                             +"\n";
-                }else {
-                    table +=
-                            " <b>"+i+"</b> "
-                            +" <b>"+residual+"</b> "
-                            +" <b>"+principl_debt+"</b> "
-                            +"<b> "+interest_payment+" </b>"
-                            +"<b> "+monthly_payment+" </b>"
-                            +"\n";
-                }
+                residual=round((residual-principl_debt)*100)/100.0;
 
             }
 
