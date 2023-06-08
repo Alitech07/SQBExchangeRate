@@ -2,23 +2,26 @@ package org.example.controller;
 
 import org.example.service.ExchangeRAteSErvice;
 import org.example.service.KreditCalculs;
+import org.example.utils.InlineKeybordUtils;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.GetFile;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class BotController extends TelegramLongPollingBot {
+
+
+
     @Override
     public void onUpdateReceived(Update update) {
+
         Message message = update.getMessage();
         SendMessage sendMessage = new SendMessage();
+
         ExchangeRAteSErvice rate = new ExchangeRAteSErvice();
         KreditCalculs kreditCalculs = new KreditCalculs();
 
@@ -48,49 +51,44 @@ public class BotController extends TelegramLongPollingBot {
                     throw new RuntimeException(e);
                 }
             }
-        }
+        }else if(update.hasMessage() & message.hasText()){
+            if (message.getText().equals("/start")){
+                GeneralController generalController = new GeneralController();
+                SendMessage sendStartMessage = generalController.commandStart(message);
+                try {
+                    execute(sendStartMessage);
+                } catch (TelegramApiException e) {
+                    throw new RuntimeException(e);
+                }
+            }else if (message.getText().equals("/help")){
+                GeneralController generalController = new GeneralController();
+                SendMessage sendHelpMessage = generalController.commandHelp(message);
 
-
-        if (message.getText().equals("/start")){
-            sendMessage.setText(message.getChat().getFirstName()+" Botga hush kelibsiz \n Bu bot orqali <b><i>SQB</i></b> bankdan kreditlar olishingiz mumkin\n Shuningdek kunlik \uD83D\uDCB1 valyuta kurslarini korishingiz mumkin."
-                    +"\nBank depoziti <b style=\"color:red; font-size:1rem;\">2 000 000 000</b> so'm ");
-            sendMessage.setChatId(message.getChat().getId());
-            sendMessage.setParseMode("HTML");
-
-            InlineKeyboardButton menu =new InlineKeyboardButton();
-            menu.setText("Valyuta kursi");
-            menu.setCallbackData("kurs");
-
-            InlineKeyboardButton kredit =new InlineKeyboardButton();
-            kredit.setText("Kredit olish");
-            kredit.setCallbackData("kredit");
-
-            List<InlineKeyboardButton> row = new LinkedList<>();
-            row.add(menu);
-            row.add(kredit);
-
-            List<List<InlineKeyboardButton>> rowCollection = new LinkedList<>();
-            rowCollection.add(row);
-
-            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-            inlineKeyboardMarkup.setKeyboard(rowCollection);
-
-            sendMessage.setReplyMarkup(inlineKeyboardMarkup);
-
-            try {
-                execute(sendMessage);
-            } catch (TelegramApiException e) {
-                throw new RuntimeException(e);
+                try {
+                    execute(sendHelpMessage);
+                } catch (TelegramApiException e) {
+                    throw new RuntimeException(e);
+                }
+            }else if (message.getText().equals("/settings")){
+                GeneralController generalController = new GeneralController();
+                SendMessage sendSettingMessage = generalController.commandSettings(message);
+                try {
+                    execute(sendSettingMessage);
+                } catch (TelegramApiException e) {
+                    throw new RuntimeException(e);
+                }
             }
-        }else {
+
+
+
             try {
                 String text = message.getText();
                 String[] split = text.split("/");
-                double credit = Double.parseDouble(split[0]);
-                Integer month = Integer.valueOf(split[1]);
-                Double protsent = Double.parseDouble(split[2]);
-                sendMessage = kreditCalculs.getKreditCalclus(credit, month, protsent, message.getChatId());
-                execute(sendMessage);
+                int credit = Integer.valueOf(split[0]);
+                int month = Integer.valueOf(split[1]);
+                double protsent = Double.parseDouble(split[2]);
+                SendDocument sendDocument = kreditCalculs.getKreditCalclus(credit, month, protsent, message.getChatId());
+                execute(sendDocument);
             }catch (Exception e){
                 sendMessage.setChatId(message.getChatId());
                 sendMessage.setText("Xato matin kiritldi.");
