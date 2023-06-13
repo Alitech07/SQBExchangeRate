@@ -12,6 +12,7 @@ import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
+import org.example.utils.InlineKeybordUtils;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -26,24 +27,22 @@ import java.util.List;
 import static java.lang.Math.*;
 
 public class KreditCalculs {
+    InlineKeybordUtils inlineKeybordUtils = new InlineKeybordUtils();
+    /*
+        Mikroqarz bo'limidagi tugmalarni boshqaradi.
+     */
     public SendMessage getCreditCommand(Long chatId){
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText("Bizda mikroqarzlarni 0 dan 50 million so'mgacha\n1 oydan 48 oygacha muddatda\nyillik foiz stavkasi 27.9% dan 29.9% gacha miqdorda olishingiz mumkin.");
-        InlineKeyboardButton cal =new InlineKeyboardButton();
-        cal.setText("Kredit Kalkulyatori");
-        cal.setCallbackData("calculs");
 
-        List<InlineKeyboardButton> row = new LinkedList<>();
-        row.add(cal);
+        InlineKeyboardButton microDebt = inlineKeybordUtils.createInlineButton("Mikroqarz olish", "microDebt");
+        InlineKeyboardButton cal = inlineKeybordUtils.createInlineButton("Kredit kalkulyatori", "calculs");
+        List<InlineKeyboardButton> row = inlineKeybordUtils.row(microDebt, cal);
+        List<List<InlineKeyboardButton>> rowCollection = inlineKeybordUtils.rowCollection(row);
+        InlineKeyboardMarkup markupButton = inlineKeybordUtils.markupButton(rowCollection);
 
-        List<List<InlineKeyboardButton>> rowCollection = new LinkedList<>();
-        rowCollection.add(row);
-
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        inlineKeyboardMarkup.setKeyboard(rowCollection);
-
-        sendMessage.setReplyMarkup(inlineKeyboardMarkup);
+        sendMessage.setReplyMarkup(markupButton);
         return sendMessage;
     }
 
@@ -126,5 +125,10 @@ public class KreditCalculs {
             sendDocument.setChatId(chatId);
             sendDocument.setDocument(new File("/media/coder/8AB228D9B228CB8F/java_project/telegram bot/telegramBotkeybord/"+path));
             return sendDocument;
+    }
+
+    public SendMessage getCredit(long chatId){
+        SendMessage sendMessage = new SendMessage();
+        return sendMessage;
     }
 }

@@ -1,8 +1,4 @@
 package org.example.entity.enums;
-
-import lombok.Data;
-
-@Data
 public enum Step {
     CALCULATOR,
     EXCHANGE_RATE_CCY,

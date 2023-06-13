@@ -1,6 +1,5 @@
 package org.example.entity;
 
-import com.sun.org.apache.bcel.internal.generic.LNEG;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,10 +8,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    private Long id;
+    private String id;
     private String firstName;
     private String lastName;
     private String username;
+    private String pasportSeria;
+    private String phoneNumber;
     private String step;
-    private Long photoId;
+    private Integer photoId;
+    private double salary;
+
+    public User(String id,String username, String step) {
+        this.id = id;
+        this.username = username;
+        this.step = step;
+    }
 }

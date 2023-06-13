@@ -15,7 +15,7 @@ public class UsersService {
         ResultSet resultSet = statement.executeQuery(query);
         User user = new User();
         while (resultSet.next()){
-            user.setId(resultSet.getLong(1));
+            user.setId(resultSet.getString(1));
             user.setFirstName(resultSet.getString(2));
             user.setLastName(resultSet.getString(3));
             user.setUsername(resultSet.getString(4));
@@ -31,7 +31,7 @@ public class UsersService {
         String query = "insert into users(id,first_name,last_name,username,step,photo_id) values(?,?,?,?,?,?)";
         try {
             preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setLong(1,user.getId());
+            preparedStatement.setString(1,user.getId());
             preparedStatement.setString(2,user.getFirstName());
             preparedStatement.setString(3, user.getLastName());
             preparedStatement.setString(4, user.getUsername());
@@ -58,7 +58,7 @@ public class UsersService {
         return true;
     }
 
-    public boolean chackUser(Long id){
+    public boolean chackUser(Integer id){
         String query = "select count(*) from users where id"+id;
         try {
             statement = conn.createStatement();
