@@ -186,7 +186,7 @@ boolean isSalary = false;
 
     @Override
     public String getBotToken() {
-        return "1326999462:AAFQ6yU1gfLg6_FaQz4twztTqcaQU2HDiNU";
+        return "326999462:AAFQ6yU1gfLg6_FaQz4twztTqcaQU2HDiU";
     }
 
     /**
